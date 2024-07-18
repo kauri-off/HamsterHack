@@ -26,8 +26,12 @@ class Main:
         self.logger = setup_logging()
         self.config = ConfigManager()
         self.endpoints = endpoints.Endpoints(self.config.get_token())
+        self.account_info = self.endpoints.account_info()
 
     def run(self):
+        self.logger.info(f"Name: {self.account_info.name}")
+        self.logger.info(f"ID: {self.account_info.id}")
+
         while True:
             try:
                 self.sync()
@@ -38,6 +42,8 @@ class Main:
 
             if self.endpoints.tap(self.info, self.info.availableTaps).status_code == 200:
                 self.logger.info(f"Clicked {self.info.availableTaps}/{self.info.maxTaps} | Current: {self.info.totalCoins:,}")
+            else:
+                self.logger.error("Failed to tap")
 
             time.sleep(10)
 
