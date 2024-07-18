@@ -1,0 +1,9 @@
+version: "3.8"
+
+services:
+  hamster_hack:
+    build: .
+    restart: on-failure
+    volumes:
+      - ./env:/app/env
+      - ./src:/app/src
