@@ -53,7 +53,7 @@ class Endpoints:
 
         return requests.post(url=url, headers=self.headers)
 
-    def tap(self, info: ClickerUser, count) -> requests.Response:
+    def tap(self, info: ClickerUser, count) -> ClickerUser:
         url = f"{Endpoints.API}/clicker/tap"
         headers = self.headers.copy()
         headers["Accept"] = "application/json"
@@ -64,4 +64,5 @@ class Endpoints:
             "timestamp": round(time.time())
         }
 
-        return requests.post(url=url, headers=headers, json=body)
+        res = requests.post(url=url, headers=headers, json=body).json()
+        return ClickerUser(**res.get("clickerUser"))

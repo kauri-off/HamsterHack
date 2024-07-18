@@ -28,28 +28,41 @@ class Main:
         self.logger = setup_logging()
         self.config = ConfigManager()
         self.endpoints = endpoints.Endpoints(self.config.get_token())
+
         self.account_info = self.endpoints.account_info()
+
+        for _ in range(3):
+            if not self.sync():
+                break
+        else:
+            self.logger.critical("Failed to sync, all attempts failed")
+            exit()
 
     def run(self):
         self.logger.info(f"Name: {self.account_info.name}")
         self.logger.info(f"ID: {self.account_info.id}")
 
         while True:
-            try:
-                self.sync()
-            except:
-                self.logger.error("Failed to sync")
-                time.sleep(3)
-                continue
+            self.sync()
+            self.logger.info(f"Energy {self.info.availableTaps}/{self.info.maxTaps} | Balance: {round(self.info.totalCoins):,} | Level: {self.info.level}")
 
-            if self.endpoints.tap(self.info, self.info.availableTaps).status_code != 200:
+            try:
+                self.endpoints.tap(self.info, self.info.availableTaps)
+            except:
                 self.logger.error("Failed to tap")
 
-            self.logger.info(f"Energy {self.info.availableTaps}/{self.info.maxTaps} | Balance: {round(self.info.totalCoins):,} | Level: {self.info.level}")
             time.sleep(10)
 
-    def sync(self):
-        self.info = self.endpoints.sync()
+    def sync(self) -> bool:
+        '''Return True if error'''
+
+        try:
+            self.info = self.endpoints.sync()
+            return False
+        except:
+            self.logger.error("Failed to sync")
+            time.sleep(3)
+            return True
 
 if __name__ == "__main__":
     main = Main()
