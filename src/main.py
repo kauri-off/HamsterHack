@@ -72,7 +72,7 @@ class Main:
                 except:
                     self.logger.error(f"Error, user: {account.account_info.name}")
 
-            time.sleep(10)
+            time.sleep(30)
 
 
 if __name__ == "__main__":
