@@ -36,6 +36,7 @@ class Account:
         self.logger.info(f"Name: {self.account_info.name} | Balance: {round(self.info.balanceCoins):,} | Level: {self.info.level}")
 
         self.update_boosts()
+        self.get_daily()
 
     def update_boosts(self):
         boosts = self.endpoint.boosts_for_buy()
@@ -49,6 +50,9 @@ class Account:
 
             if boost.id == "BoostFullAvailableTaps":
                 self.logger.info(f"Name: {self.account_info.name} Now has full energy!")
+
+    def get_daily(self):
+        ... #TODO:
 
 
 class Main:
