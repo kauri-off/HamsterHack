@@ -23,46 +23,38 @@ def setup_logging():
 
     return logger
 
+class Account:
+    def __init__(self, token) -> None:
+        self.logger = logging.getLogger("HamsterHack")
+        self.endpoint = endpoints.Endpoints(token)
+        self.account_info = self.endpoint.account_info()
+
+    def tap(self):
+        self.info = self.endpoint.sync()
+
+        self.info = self.endpoint.tap(self.info, self.info.availableTaps)
+        self.logger.info(f"Name: {self.account_info.name} | Balance: {round(self.info.totalCoins):,} | Level: {self.info.level}")
+
+
 class Main:
     def __init__(self) -> None:
         self.logger = setup_logging()
         self.config = ConfigManager()
-        self.endpoints = endpoints.Endpoints(self.config.get_token())
 
-        self.account_info = self.endpoints.account_info()
-
-        for _ in range(3):
-            if not self.sync():
-                break
-        else:
-            self.logger.critical("Failed to sync, all attempts failed")
-            exit()
+        self.accounts: list[Account] = []
+        for token in self.config.get_token_list():
+            self.accounts.append(Account(token))
 
     def run(self):
-        self.logger.info(f"Name: {self.account_info.name}")
-        self.logger.info(f"ID: {self.account_info.id}")
-
         while True:
-            self.sync()
-            self.logger.info(f"Energy {self.info.availableTaps}/{self.info.maxTaps} | Balance: {round(self.info.totalCoins):,} | Level: {self.info.level}")
-
-            try:
-                self.endpoints.tap(self.info, self.info.availableTaps)
-            except:
-                self.logger.error("Failed to tap")
+            for account in self.accounts:
+                try:
+                    account.tap()
+                except:
+                    self.logger.error(f"Error, user: {account.account_info.name}")
 
             time.sleep(10)
 
-    def sync(self) -> bool:
-        '''Return True if error'''
-
-        try:
-            self.info = self.endpoints.sync()
-            return False
-        except:
-            self.logger.error("Failed to sync")
-            time.sleep(3)
-            return True
 
 if __name__ == "__main__":
     main = Main()
