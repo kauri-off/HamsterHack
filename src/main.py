@@ -37,7 +37,7 @@ class Main:
                 continue
 
             if self.endpoints.tap(self.info, self.info.availableTaps).status_code == 200:
-                self.logger.info(f"Clicked {self.info.availableTaps}/{self.info.maxTaps} | Current: {self.info.totalCoins}")
+                self.logger.info(f"Clicked {self.info.availableTaps}/{self.info.maxTaps} | Current: {self.info.totalCoins:,}")
 
             time.sleep(10)
 
