@@ -5,7 +5,6 @@ import endpoints
 from config import *
 from models import *
 
-
 def setup_logging():
     logger = logging.getLogger("HamsterHack")
     logger.setLevel(logging.DEBUG)
@@ -54,6 +53,11 @@ class Account:
     def get_daily(self):
         ... #TODO:
 
+    @staticmethod
+    def from_init_data(init_data: str):
+        token = endpoints.Endpoints.auth_by_telegram(init_data)
+        return Account(token)
+
 
 class Main:
     def __init__(self) -> None:
@@ -61,8 +65,11 @@ class Main:
         self.config = ConfigManager()
 
         self.accounts: list[Account] = []
-        for token in self.config.get_token_list():
+        for token in self.config.get_config().token_list:
             self.accounts.append(Account(token))
+
+        for init_data in self.config.get_config().init_data:
+            self.accounts.append(Account.from_init_data(init_data))
 
     def run(self):
         while True:

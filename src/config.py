@@ -5,11 +5,12 @@ from pydantic import BaseModel
 
 class Config(BaseModel):
     token_list: list[str]
+    init_data: list[str]
 
 class ConfigManager:
     def __init__(self, file_path: str="/app/env/config.json") -> None:
         with open(file_path, 'r') as f:
             self.__config = Config(**json.load(f))
 
-    def get_token_list(self) -> list[str]:
-        return self.__config.token_list
+    def get_config(self) -> Config:
+        return self.__config

@@ -86,3 +86,17 @@ class Endpoints:
 
         res = requests.post(url=url, headers=headers, json=body).json()
         return ClickerUser(**res.get("clickerUser"))
+
+    @staticmethod
+    def auth_by_telegram(init_data: str) -> str:
+        url = f"{Endpoints.API}/auth/auth-by-telegram-webapp"
+
+        headers = Endpoints.HEADERS.copy()
+        headers["Accept"] = "application/json"
+
+        body = {
+            "initDataRaw": init_data
+        }
+
+        res = requests.post(url=url, headers=headers, json=body).json()
+        return res.get("authToken")
