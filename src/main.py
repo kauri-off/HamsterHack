@@ -33,7 +33,22 @@ class Account:
         self.info = self.endpoint.sync()
 
         self.info = self.endpoint.tap(self.info, self.info.availableTaps)
-        self.logger.info(f"Name: {self.account_info.name} | Balance: {round(self.info.totalCoins):,} | Level: {self.info.level}")
+        self.logger.info(f"Name: {self.account_info.name} | Balance: {round(self.info.balanceCoins):,} | Level: {self.info.level}")
+
+        self.update_boosts()
+
+    def update_boosts(self):
+        boosts = self.endpoint.boosts_for_buy()
+
+        for boost in boosts.boostsForBuy:
+            self.apply_free_boost(boost)
+
+    def apply_free_boost(self, boost: Boost):
+        if boost.price == 0 and boost.cooldownSeconds == 0:
+            self.endpoint.apply_boost(boost)
+
+            if boost.id == "BoostFullAvailableTaps":
+                self.logger.info(f"Name: {self.account_info.name} Now has full energy!")
 
 
 class Main:

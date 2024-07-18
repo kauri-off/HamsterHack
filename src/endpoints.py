@@ -66,3 +66,12 @@ class Endpoints:
 
         res = requests.post(url=url, headers=headers, json=body).json()
         return ClickerUser(**res.get("clickerUser"))
+
+    def boosts_for_buy(self) -> BoostsForBuy:
+        url = f"{Endpoints.API}/clicker/boosts-for-buy"
+
+        res = requests.post(url=url, headers=self.headers).json()
+        return BoostsForBuy(**res)
+
+    def apply_boost(self, boost: Boost):
+        ... #TODO:

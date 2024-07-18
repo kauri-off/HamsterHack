@@ -1,5 +1,7 @@
 import json
+
 from pydantic import BaseModel
+
 
 class Config(BaseModel):
     token_list: list[str]
