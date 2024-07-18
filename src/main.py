@@ -42,11 +42,10 @@ class Main:
                 time.sleep(3)
                 continue
 
-            if self.endpoints.tap(self.info, self.info.availableTaps).status_code == 200:
-                self.logger.info(f"Clicked {self.info.availableTaps}/{self.info.maxTaps} | Current: {self.info.totalCoins:,}")
-            else:
+            if self.endpoints.tap(self.info, self.info.availableTaps).status_code != 200:
                 self.logger.error("Failed to tap")
 
+            self.logger.info(f"Energy {self.info.availableTaps}/{self.info.maxTaps} | Balance: {round(self.info.totalCoins):,} | Level: {self.info.level}")
             time.sleep(10)
 
     def sync(self):
