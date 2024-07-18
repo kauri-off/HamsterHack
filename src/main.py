@@ -88,11 +88,16 @@ class Main:
         self.config = ConfigManager()
 
         self.accounts: list[Account] = []
-        for token in self.config.get_config().token_list:
-            self.accounts.append(Account(token))
 
-        for init_data in self.config.get_config().init_data:
-            self.accounts.append(Account.from_init_data(init_data))
+        token_list = self.config.get_config().token_list
+        if token_list:
+            for token in token_list:
+                self.accounts.append(Account(token))
+
+        init_data = self.config.get_config().init_data
+        if init_data:
+            for init_data in init_data:
+                self.accounts.append(Account.from_init_data(init_data))
 
     def run(self):
         while True:
