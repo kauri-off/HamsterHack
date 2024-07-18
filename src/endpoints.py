@@ -28,31 +28,6 @@ class Endpoints:
         res = requests.post(url=url, headers=self.headers).json()
         return ClickerUser(**res.get("clickerUser"))
 
-    def config(self) -> requests.Response:
-        url = f"{Endpoints.API}/clicker/config"
-
-        return requests.post(url=url, headers=self.headers)
-
-    def upgrades_for_buy(self) -> requests.Response:
-        url = f"{Endpoints.API}/clicker/upgrades-for-buy"
-
-        return requests.post(url=url, headers=self.headers)
-
-    def list_tasks(self) -> requests.Response:
-        url = f"{Endpoints.API}/clicker/list-tasks"
-
-        return requests.post(url=url, headers=self.headers)
-
-    def list_airdrop_tasks(self) -> requests.Response:
-        url = f"{Endpoints.API}/clicker/list-airdrop-tasks"
-
-        return requests.post(url=url, headers=self.headers)
-
-    def ip(self) -> requests.Response:
-        url = f"{Endpoints.API}/ip"
-
-        return requests.post(url=url, headers=self.headers)
-
     def tap(self, info: ClickerUser, count) -> ClickerUser:
         url = f"{Endpoints.API}/clicker/tap"
         headers = self.headers.copy()
@@ -73,7 +48,7 @@ class Endpoints:
         res = requests.post(url=url, headers=self.headers).json()
         return BoostsForBuy(**res)
 
-    def apply_boost(self, boost: Boost) -> ClickerUser:
+    def buy_boost(self, boost: Boost) -> ClickerUser:
         url = f"{Endpoints.API}/clicker/buy-boost"
         headers = self.headers.copy()
         headers["Accept"] = "application/json"
@@ -81,6 +56,26 @@ class Endpoints:
         body = {
             "boostId": boost.id,
             "timestamp": round(time.time())
+        }
+
+
+        res = requests.post(url=url, headers=headers, json=body).json()
+        return ClickerUser(**res.get("clickerUser"))
+
+    def upgrades_for_buy(self) -> UpgradesForBuy:
+        url = f"{Endpoints.API}/clicker/upgrades-for-buy"
+
+        res = requests.post(url=url, headers=self.headers).json()
+        return UpgradesForBuy(**res)
+
+    def buy_upgrade(self, upgrade: Upgrade) -> ClickerUser:
+        url = f"{Endpoints.API}/clicker/buy-upgrade"
+        headers = self.headers.copy()
+        headers["Accept"] = "application/json"
+
+        body = {
+            "timestamp": round(time.time()*1000),
+            "upgradeId": upgrade.id
         }
 
 

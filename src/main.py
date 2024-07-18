@@ -34,8 +34,31 @@ class Account:
         self.info = self.endpoint.tap(self.info, self.info.availableTaps)
         self.logger.info(f"Name: {self.account_info.name} | Balance: {round(self.info.balanceCoins):,} | Level: {self.info.level}")
 
+    def update(self):
         self.update_boosts()
         self.get_daily()
+
+        while self.update_mining():
+            pass
+
+    def update_mining(self) -> bool:
+        upgrades = self.endpoint.upgrades_for_buy()
+        upgrades = list(filter(lambda up: up.isAvailable, upgrades.upgradesForBuy))
+        upgrades = list(filter(lambda up: up.price<self.info.balanceCoins, upgrades))
+        upgrades = list(filter(lambda up: up.section=="PR&Team", upgrades))
+        # upgrades = list(filter(lambda up: up.price>2000, upgrades))
+
+        upgrades.sort()
+
+        if upgrades:
+            upgrade = upgrades[0]
+            if upgrade.profit() < 0.2:
+                return False
+            self.info = self.endpoint.buy_upgrade(upgrade)
+            self.logger.info(f"Name: {self.account_info.name} buy ({upgrade.name}) level ({upgrade.level+1}) | Balance: {round(self.info.balanceCoins):,}")
+            return True
+
+        return False
 
     def update_boosts(self):
         boosts = self.endpoint.boosts_for_buy()
@@ -45,7 +68,7 @@ class Account:
 
     def apply_free_boost(self, boost: Boost):
         if boost.price == 0 and boost.cooldownSeconds == 0:
-            self.endpoint.apply_boost(boost)
+            self.endpoint.buy_boost(boost)
 
             if boost.id == "BoostFullAvailableTaps":
                 self.logger.info(f"Name: {self.account_info.name} Now has full energy!")
@@ -76,6 +99,7 @@ class Main:
             for account in self.accounts:
                 try:
                     account.tap()
+                    account.update()
                 except:
                     self.logger.error(f"Error, user: {account.account_info.name}")
 
