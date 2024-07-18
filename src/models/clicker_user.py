@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 class Upgrade(BaseModel):
     id: str
     level: int

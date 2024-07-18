@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 
+
 class AccountInfo(BaseModel):
     id: str
     at: str

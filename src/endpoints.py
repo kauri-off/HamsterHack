@@ -1,6 +1,9 @@
-import requests
-from models import *
 import time
+
+import requests
+
+from models import *
+
 
 class Endpoints:
     API = "https://api.hamsterkombatgame.io"
