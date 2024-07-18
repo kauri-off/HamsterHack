@@ -1,5 +1,6 @@
 # HamsterHack
-# [Гайд](./guide/), как получить токен
+## [Гайд](./guide/), как получить токен
+## [Гайд](https://docs.docker.com/get-docker/), как установить докер
 ## Установка
 ```
 git clone https://github.com/kauri-off/HamsterHack
