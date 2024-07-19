@@ -16,6 +16,10 @@ class Upgrade(BaseModel):
     def ratio(self):
         return self.price / self.profitPerHour
 
+class Section(BaseModel):
+    section: str
+    isAvailable: bool
 
 class UpgradesForBuy(BaseModel):
     upgradesForBuy: list[Upgrade]
+    sections: list[Section]

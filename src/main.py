@@ -71,7 +71,11 @@ class Account:
         return best_option
 
     def update_mining(self) -> bool:
-        upgrades = self.endpoint.upgrades_for_buy().upgradesForBuy
+        upgrades_for_buy = self.endpoint.upgrades_for_buy()
+
+        available_sections = [section.section for section in upgrades_for_buy.sections if section.isAvailable]
+
+        upgrades = list(filter(lambda up: up.section in available_sections, upgrades_for_buy.upgradesForBuy))
         upgrades = list(filter(lambda up: up.isAvailable and not up.isExpired, upgrades))
         upgrades = list(filter(lambda up: up.price<self.info.balanceCoins, upgrades))
 
