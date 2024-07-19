@@ -27,6 +27,7 @@ class Account:
         self.logger = logging.getLogger("HamsterHack")
         self.endpoint = endpoints.Endpoints(token)
         self.account_info = self.endpoint.account_info()
+        self.info = self.endpoint.sync()
 
     def tap(self):
         self.info = self.endpoint.sync()
@@ -45,14 +46,14 @@ class Account:
         upgrades = self.endpoint.upgrades_for_buy()
         upgrades = list(filter(lambda up: up.isAvailable, upgrades.upgradesForBuy))
         upgrades = list(filter(lambda up: up.price<self.info.balanceCoins, upgrades))
-        upgrades = list(filter(lambda up: up.section=="PR&Team", upgrades))
+        # upgrades = list(filter(lambda up: up.section=="PR&Team", upgrades))
         # upgrades = list(filter(lambda up: up.price>2000, upgrades))
 
         upgrades.sort()
 
         if upgrades:
             upgrade = upgrades[0]
-            if upgrade.profit() < 0.2:
+            if upgrade.profit() < 0.15:
                 return False
             self.info = self.endpoint.buy_upgrade(upgrade)
             self.logger.info(f"Name: {self.account_info.name} buy ({upgrade.name}) level ({upgrade.level+1}) | Balance: {round(self.info.balanceCoins):,}")
@@ -105,8 +106,8 @@ class Main:
                 try:
                     account.tap()
                     account.update()
-                except:
-                    self.logger.error(f"Error, user: {account.account_info.name}")
+                except Exception as e:
+                    self.logger.error(f"Error, user: {account.account_info.name} | {e}")
 
             time.sleep(30)
 
