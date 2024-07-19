@@ -45,7 +45,7 @@ class Account:
 
     def update_mining(self) -> bool:
         upgrades = self.endpoint.upgrades_for_buy()
-        upgrades = list(filter(lambda up: up.isAvailable, upgrades.upgradesForBuy))
+        upgrades = list(filter(lambda up: up.isAvailable and not up.isExpired, upgrades.upgradesForBuy))
         upgrades = list(filter(lambda up: up.price<self.info.balanceCoins, upgrades))
         # upgrades = list(filter(lambda up: up.section=="PR&Team", upgrades))
         # upgrades = list(filter(lambda up: up.price>2000, upgrades))
@@ -111,10 +111,10 @@ class Main:
             for account in self.accounts:
                 try:
                     account.tap()
-                    account.update()
                 except Exception as e:
                     self.logger.error(f"Error, user: {account.account_info.name} | {e}")
 
+                account.update()
             time.sleep(30)
 
 
