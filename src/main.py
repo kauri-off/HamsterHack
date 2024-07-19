@@ -77,12 +77,13 @@ class Account:
 
         upgrades = list(filter(lambda up: up.section in available_sections, upgrades_for_buy.upgradesForBuy))
         upgrades = list(filter(lambda up: up.isAvailable and not up.isExpired, upgrades))
-        upgrades = list(filter(lambda up: up.price<self.info.balanceCoins, upgrades))
+        max_available = len(upgrades)
 
+        upgrades = list(filter(lambda up: up.price<self.info.balanceCoins, upgrades))
         best_upgrade = self.best_upgrade_option(upgrades)
 
         if best_upgrade:
-            if 1/best_upgrade.ratio() < 0.15:
+            if len(upgrades)/max_available < 0.6:
                 return False
             self.info = self.endpoint.buy_upgrade(best_upgrade)
             self.logger.info(f"Name: {self.account_info.name} buy ({best_upgrade.name}) level ({best_upgrade.level+1}) | Balance: {round(self.info.balanceCoins):,}")
