@@ -13,17 +13,8 @@ class Upgrade(BaseModel):
     isAvailable: bool
     isExpired: bool
 
-    def __lt__(self, other):
-        if self.price == 0:
-            return False
-        elif other.price == 0:
-            return True
-        return self.profit() > other.profit()
-
-    def profit(self):
-        if self.price == 0:
-            return 99999999999
-        return self.profitPerHour/self.price
+    def ratio(self):
+        return self.price / self.profitPerHour
 
 
 class UpgradesForBuy(BaseModel):

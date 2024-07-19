@@ -58,21 +58,30 @@ class Account:
         while self.update_mining():
             pass
 
+    def best_upgrade_option(self, upgrades: list[Upgrade]):
+        best_option = None
+        best_ratio = float('inf')
+
+        for upgrade in upgrades:
+            ratio = upgrade.ratio()
+            if ratio < best_ratio:
+                best_ratio = ratio
+                best_option = upgrade
+
+        return best_option
+
     def update_mining(self) -> bool:
-        upgrades = self.endpoint.upgrades_for_buy()
-        upgrades = list(filter(lambda up: up.isAvailable and not up.isExpired, upgrades.upgradesForBuy))
+        upgrades = self.endpoint.upgrades_for_buy().upgradesForBuy
+        upgrades = list(filter(lambda up: up.isAvailable and not up.isExpired, upgrades))
         upgrades = list(filter(lambda up: up.price<self.info.balanceCoins, upgrades))
-        # upgrades = list(filter(lambda up: up.section=="PR&Team", upgrades))
-        # upgrades = list(filter(lambda up: up.price>2000, upgrades))
 
-        upgrades.sort()
+        best_upgrade = self.best_upgrade_option(upgrades)
 
-        if upgrades:
-            upgrade = upgrades[0]
-            if upgrade.profit() < 0.15:
+        if best_upgrade:
+            if 1/best_upgrade.ratio() < 0.15:
                 return False
-            self.info = self.endpoint.buy_upgrade(upgrade)
-            self.logger.info(f"Name: {self.account_info.name} buy ({upgrade.name}) level ({upgrade.level+1}) | Balance: {round(self.info.balanceCoins):,}")
+            self.info = self.endpoint.buy_upgrade(best_upgrade)
+            self.logger.info(f"Name: {self.account_info.name} buy ({best_upgrade.name}) level ({best_upgrade.level+1}) | Balance: {round(self.info.balanceCoins):,}")
             return True
 
         return False
