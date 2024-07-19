@@ -19,8 +19,12 @@ class ConfigManager:
         if not os.path.exists(file_path):
             ConfigManager.error(file_path)
 
-        with open(file_path, 'r') as f:
-            self.__config = Config(**json.load(f))
+        try:
+            with open(file_path, 'r') as f:
+                self.__config = Config(**json.load(f))
+        except:
+            logging.getLogger("HamsterHack").critical("Config parsing error, remove config.json and restart program to generate new template")
+            exit()
 
     def get_config(self) -> Config:
         return self.__config
