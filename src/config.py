@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 class Config(BaseModel):
     token_list: list[str] | None
-    init_data: list[str] | None
+    init_data: list[str] | None = None
 
 class ConfigManager:
     def __init__(self, file_path: str="/app/env/config.json") -> None:
