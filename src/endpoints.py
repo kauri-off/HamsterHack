@@ -82,6 +82,24 @@ class Endpoints:
         res = requests.post(url=url, headers=headers, json=body).json()
         return ClickerUser(**res.get("clickerUser"))
 
+    def list_task(self) -> ListTask:
+        url = f"{Endpoints.API}/clicker/list-tasks"
+
+        res = requests.post(url=url, headers=self.headers).json()
+        return ListTask(**res)
+
+    def check_task(self, task: Task) -> Task:
+        url = f"{Endpoints.API}/clicker/check-task"
+        headers = self.headers.copy()
+        headers["Accept"] = "application/json"
+
+        body = {
+            "taskId": task.id
+        }
+
+        res = requests.post(url=url, headers=headers, json=body).json()
+        return Task(**res.get("task"))
+
     @staticmethod
     def auth_by_telegram(init_data: str) -> str:
         url = f"{Endpoints.API}/auth/auth-by-telegram-webapp"

@@ -75,7 +75,12 @@ class Account:
                 self.logger.info(f"Name: {self.account_info.name} Now has full energy!")
 
     def get_daily(self):
-        ... #TODO:
+        tasks = self.endpoint.list_task()
+
+        for task in tasks.tasks:
+            if task.id == "streak_days" and not task.isCompleted:
+                self.endpoint.check_task(task)
+                self.logger.info(f"Name: {self.account_info.name} new day, new streak!")
 
     @staticmethod
     def from_init_data(init_data: str):
