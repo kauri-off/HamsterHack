@@ -24,9 +24,18 @@ def setup_logging():
     return logger
 
 class Account:
-    def __init__(self, token) -> None:
+    def __init__(self, session: Session) -> None:
         self.logger = logging.getLogger("HamsterHack")
-        self.endpoint = endpoints.Endpoints(token)
+        self.session = session
+
+        if session.token:
+            self.endpoint = endpoints.Endpoints(session.token)
+        elif session.init_data:
+            self.endpoint = endpoints.Endpoints(endpoints.Endpoints.auth_by_telegram(session.init_data))
+        else:
+            self.logger.critical("Cannot get token or init_data, check config")
+            exit()
+
         self.account_info = self.endpoint.account_info()
         self.info = self.endpoint.sync()
 
@@ -83,10 +92,6 @@ class Account:
                 self.endpoint.check_task(task)
                 self.logger.info(f"Name: {self.account_info.name} new day, new streak!")
 
-    @staticmethod
-    def from_init_data(init_data: str):
-        token = endpoints.Endpoints.auth_by_telegram(init_data)
-        return Account(token)
 
 
 class Main:
@@ -96,15 +101,8 @@ class Main:
 
         self.accounts: list[Account] = []
 
-        token_list = self.config.get_config().token_list
-        if token_list:
-            for token in token_list:
-                self.accounts.append(Account(token))
-
-        init_data = self.config.get_config().init_data
-        if init_data:
-            for init_data in init_data:
-                self.accounts.append(Account.from_init_data(init_data))
+        for session in self.config.get_config().sessions:
+            self.accounts.append(Account(session))
 
     def run(self):
         while True:
