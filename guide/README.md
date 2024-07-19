@@ -29,9 +29,16 @@ if(location.hostname === "hamsterkombatgame.io") {
 ### 5. В одном из запросов найдите токен и полностью скопируйте его
 ![5](./5.png)
 
-### Затем создайте папку `env` а в ней файл `config.json` и вставьте в него токены
+### Затем создайте папку `env` а в ней файл `config.json` и вставьте в него сессии
 ```json
 {
-  "token_list": ["Bearer abcde123123"]
+  "sessions": [
+    {
+      "token": "Bearer <token>",
+      "tap": true,
+      "upgrade": true
+    }
+  ]
 }
+
 ```
