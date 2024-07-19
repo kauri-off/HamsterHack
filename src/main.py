@@ -5,6 +5,7 @@ import endpoints
 from config import *
 from models import *
 
+
 def setup_logging():
     logger = logging.getLogger("HamsterHack")
     logger.setLevel(logging.DEBUG)
