@@ -75,11 +75,14 @@ class Account:
 
         available_sections = [section.section for section in upgrades_for_buy.sections if section.isAvailable]
 
-        upgrades = list(filter(lambda up: up.section in available_sections, upgrades_for_buy.upgradesForBuy))
-        upgrades = list(filter(lambda up: up.isAvailable and not up.isExpired, upgrades))
+        upgrades = [up for up in upgrades_for_buy.upgradesForBuy if up.section in available_sections]
+        upgrades = [up for up in upgrades if up.isAvailable and not up.isExpired]
         max_available = len(upgrades)
 
-        upgrades = list(filter(lambda up: up.price<self.info.balanceCoins, upgrades))
+        if max_available == 0:
+            return False
+
+        upgrades = [up for up in upgrades if up.price<self.info.balanceCoins]
         best_upgrade = self.best_upgrade_option(upgrades)
 
         if best_upgrade:
