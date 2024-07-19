@@ -111,10 +111,10 @@ class Main:
             for account in self.accounts:
                 try:
                     account.tap()
+                    account.update()
                 except Exception as e:
                     self.logger.error(f"Error, user: {account.account_info.name} | {e}")
 
-                account.update()
             time.sleep(30)
 
 
