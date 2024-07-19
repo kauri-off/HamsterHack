@@ -40,12 +40,18 @@ class Account:
         self.info = self.endpoint.sync()
 
     def tap(self):
+        if not self.session.tap:
+            return
+
         self.info = self.endpoint.sync()
 
         self.info = self.endpoint.tap(self.info, self.info.availableTaps)
         self.logger.info(f"Name: {self.account_info.name} | Balance: {round(self.info.balanceCoins):,} | Level: {self.info.level}")
 
     def update(self):
+        if not self.session.upgrade:
+            return
+
         self.update_boosts()
         self.get_daily()
 
