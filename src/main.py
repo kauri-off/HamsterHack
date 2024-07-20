@@ -123,7 +123,7 @@ class Account:
             self.endpoint.buy_boost(boost)
 
             if boost.id == "BoostFullAvailableTaps":
-                self.logger.info(f"Name: {self.account_info.name} Now has full energy!")
+                self.logger.info(f"Name: {Fore.RED}{self.account_info.name}{Fore.RESET} Now has {Fore.GREEN}full{Fore.RESET} energy!")
 
     def get_daily(self):
         tasks = self.endpoint.list_task()
@@ -131,7 +131,7 @@ class Account:
         for task in tasks.tasks:
             if task.id == "streak_days" and not task.isCompleted:
                 self.endpoint.check_task(task)
-                self.logger.info(f"Name: {self.account_info.name} new day, new streak!")
+                self.logger.info(f"Name: {Fore.RED}{self.account_info.name}{Fore.RESET} new day, {Fore.CYAN}new streak!{Fore.RESET}")
 
 
 
