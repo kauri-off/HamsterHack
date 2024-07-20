@@ -40,18 +40,27 @@ class Account:
 
         self.account_info = self.endpoint.account_info()
         self.info = self.endpoint.sync()
+        self.last_time = None
 
     def tap(self):
         if not self.session.tap:
             return
 
-        prev_bal = self.info.balanceCoins
-        self.info = self.endpoint.sync()
+        info = self.endpoint.sync()
+        last_time = time.time()
 
-        self.info = self.endpoint.tap(self.info, self.info.availableTaps)
+        info = self.endpoint.tap(info, info.availableTaps)
 
-        profit = round(self.info.balanceCoins-prev_bal)
-        self.logger.info(f"User: {Fore.RED}{self.account_info.name}{Fore.RESET} | Bal: {Fore.GREEN}{round(self.info.balanceCoins):,}{Fore.RESET} (+{profit:,}) | PPH: {Fore.CYAN}{profit*60*2:,}{Fore.RESET}")
+        profit = round(info.balanceCoins-self.info.balanceCoins)
+        bal = f"{round(self.info.balanceCoins):,}"
+        pph = f"{round(profit*60*60/(last_time-self.last_time)):,}" if self.last_time else "Unknown"
+
+        self.logger.info(f"User: {Fore.RED}{self.account_info.name}{Fore.RESET} | "\
+            f"Bal: {Fore.GREEN}{bal}{Fore.RESET} (+{profit:,}) | "\
+            f"PPH: {Fore.CYAN}{pph}{Fore.RESET}")
+
+        self.last_time = last_time
+        self.info = info
 
     def update(self):
         if not self.session.upgrade:
