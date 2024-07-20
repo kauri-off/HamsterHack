@@ -88,7 +88,11 @@ class Account:
         if best_upgrade:
             if len(upgrades)/max_available < 0.6:
                 return False
-            self.info = self.endpoint.buy_upgrade(best_upgrade)
+            try:
+                self.info = self.endpoint.buy_upgrade(best_upgrade)
+            except:
+                raise Exception(f"Error when trying to buy {best_upgrade.id}")
+
             self.logger.info(f"Name: {self.account_info.name} buy ({best_upgrade.name}) level ({best_upgrade.level+1}) | Balance: {round(self.info.balanceCoins):,}")
             return True
 
