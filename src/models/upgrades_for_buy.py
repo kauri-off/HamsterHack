@@ -12,6 +12,7 @@ class Upgrade(BaseModel):
     profitPerHourDelta: int | float
     isAvailable: bool
     isExpired: bool
+    cooldownSeconds: int | None = 0
 
     def ratio(self):
         return self.price / self.profitPerHour

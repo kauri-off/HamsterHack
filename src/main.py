@@ -76,7 +76,7 @@ class Account:
         available_sections = [section.section for section in upgrades_for_buy.sections if section.isAvailable and section.section != "Specials"]
 
         upgrades = [up for up in upgrades_for_buy.upgradesForBuy if up.section in available_sections]
-        upgrades = [up for up in upgrades if up.isAvailable and not up.isExpired]
+        upgrades = [up for up in upgrades if up.isAvailable and not up.isExpired and up.cooldownSeconds == 0]
         max_available = len(upgrades)
 
         if max_available == 0:
