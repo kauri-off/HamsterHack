@@ -43,10 +43,13 @@ class Account:
         if not self.session.tap:
             return
 
+        prev_bal = self.info.balanceCoins
         self.info = self.endpoint.sync()
 
         self.info = self.endpoint.tap(self.info, self.info.availableTaps)
-        self.logger.info(f"Name: {self.account_info.name} | Balance: {round(self.info.balanceCoins):,} | Level: {self.info.level}")
+
+        profit = round(self.info.balanceCoins-prev_bal)
+        self.logger.info(f"User: {self.account_info.name} | Bal: {round(self.info.balanceCoins):,} (+{profit:,}) | PPH: {profit*60*2:,}")
 
     def update(self):
         if not self.session.upgrade:
@@ -93,7 +96,7 @@ class Account:
             except:
                 raise Exception(f"Error when trying to buy {best_upgrade.id}")
 
-            self.logger.info(f"Name: {self.account_info.name} buy ({best_upgrade.name}) level ({best_upgrade.level+1}) | Balance: {round(self.info.balanceCoins):,}")
+            self.logger.info(f"{self.account_info.name} upgrade ({best_upgrade.name}) to level ({best_upgrade.level+1}) | Bal: {round(self.info.balanceCoins):,}")
             return True
 
         return False
