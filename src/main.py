@@ -1,6 +1,8 @@
 import logging
 import time
 
+from colorama import Fore
+
 import endpoints
 from config import *
 from models import *
@@ -49,7 +51,7 @@ class Account:
         self.info = self.endpoint.tap(self.info, self.info.availableTaps)
 
         profit = round(self.info.balanceCoins-prev_bal)
-        self.logger.info(f"User: {self.account_info.name} | Bal: {round(self.info.balanceCoins):,} (+{profit:,}) | PPH: {profit*60*2:,}")
+        self.logger.info(f"User: {Fore.RED}{self.account_info.name}{Fore.RESET} | Bal: {Fore.GREEN}{round(self.info.balanceCoins):,}{Fore.RESET} (+{profit:,}) | PPH: {Fore.CYAN}{profit*60*2:,}{Fore.RESET}")
 
     def update(self):
         if not self.session.upgrade:
@@ -96,7 +98,7 @@ class Account:
             except:
                 raise Exception(f"Error when trying to buy {best_upgrade.id}")
 
-            self.logger.info(f"{self.account_info.name} upgrade ({best_upgrade.name}) to level ({best_upgrade.level+1}) | Bal: {round(self.info.balanceCoins):,}")
+            self.logger.info(f"{Fore.RED}{self.account_info.name}{Fore.RESET} upgrade ({Fore.BLUE}{best_upgrade.name}{Fore.RESET}) to level ({Fore.GREEN}{best_upgrade.level+1}{Fore.RESET}) | Bal: {round(self.info.balanceCoins):,}")
             return True
 
         return False
