@@ -73,7 +73,7 @@ class Account:
     def update_mining(self) -> bool:
         upgrades_for_buy = self.endpoint.upgrades_for_buy()
 
-        available_sections = [section.section for section in upgrades_for_buy.sections if section.isAvailable]
+        available_sections = [section.section for section in upgrades_for_buy.sections if section.isAvailable and section.section != "Specials"]
 
         upgrades = [up for up in upgrades_for_buy.upgradesForBuy if up.section in available_sections]
         upgrades = [up for up in upgrades if up.isAvailable and not up.isExpired]
